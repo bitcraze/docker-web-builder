@@ -1,4 +1,4 @@
-# Bitcraze builder
+# Bitcraze web builder
 
 This image is used to build Bitcraze web projects. It contains all the tools 
 needed to develop, build and run web projects. The intention is to reduce problems

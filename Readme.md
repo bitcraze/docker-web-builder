@@ -1,4 +1,4 @@
-# Bitcraze Builder Docker Image
+# Bitcraze Web Builder Docker Image
 
 This repository contains source code for the official docker web builder image
 that is used to build Bitcraze web projects.
@@ -9,7 +9,7 @@ images.
 ## Building the image
 
 The image is built automatically by Docker hub, see
-https://hub.docker.com/r/bitcraze/builder/
+https://hub.docker.com/r/bitcraze/web-builder/
 
 ## Docker
 
