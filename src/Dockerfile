@@ -1,4 +1,4 @@
-FROM ruby:2.3.0
+FROM ruby:2.4.3
 
 MAINTAINER Kristoffer Richardsson <kristoffer@bitcraze.io>
 
@@ -20,6 +20,6 @@ RUN curl -fSL "https://${DOCKER_BUCKET}/builds/Linux/x86_64/docker-$DOCKER_VERSI
 # (Encoding.default_external). Required to make html-proofer handle UTF-8.
 ENV LANG C.UTF-8
 
-RUN gem install compass jekyll jekyll-feed jekyll-compass html-proofer
+RUN gem install jekyll jekyll-feed html-proofer
 
 WORKDIR /module
