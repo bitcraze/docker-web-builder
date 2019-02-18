@@ -22,7 +22,7 @@ developing.
 
 ## Image structure 
 
-The default directory for the image is /module
+The default directory for the image is `/module`
 
     docker run --rm bitcraze/web-builder pwd
 
@@ -33,16 +33,16 @@ will print
 ## Interactive use
 
 To use a container interactively with your current directory as a volume at 
-/module
+`/module`
 
     docker run --rm -it -v ${PWD}:/module bitcraze/builder bash
 
-# Limtations
+# Limitations
 
 1. On OS X and Windows, where the docker host is a virtual machine, the source
-code you want to build must be located under /User (OS X) and c:\Users
+code you want to build must be located under `/User` (OS X) and `c:\Users`
 (Windows). For more information see
-https://docs.docker.com/userguide/dockervolumes/
+https://docs.docker.com/storage/volumes/
 
 1. We have not tested this on Windows, there might be limitations. Please
 share.
