@@ -37,12 +37,11 @@ To use a container interactively with your current directory as a volume at
 
     docker run --rm -it -v ${PWD}:/module bitcraze/builder bash
 
-# Limitations
+# Docs theme
 
-1. On OS X and Windows, where the docker host is a virtual machine, the source
-code you want to build must be located under `/User` (OS X) and `c:\Users`
-(Windows). For more information see
-https://docs.docker.com/storage/volumes/
+The docs-theme directory contains a simple jekyll theme that is used to
+serve the docs directory of a repository locally when writing docs.
 
-1. We have not tested this on Windows, there might be limitations. Please
-share.
+Example usage:
+ 
+    docker run --rm -it --volume=$PWD/docs:/module -p 80:80 bitcraze/web-builder jekyll serve --host 0.0.0.0 --port 80  --incremental --config /docs-config.yml  
