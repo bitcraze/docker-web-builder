@@ -3,7 +3,7 @@ FROM ruby:2.6.3
 MAINTAINER Kristoffer Richardsson <kristoffer@bitcraze.io>
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		php7.3-cli \
+		php7.3-cli php-xml \
 		zip unzip \
 		locales \
 	&& rm -rf /var/lib/apt/lists/*
