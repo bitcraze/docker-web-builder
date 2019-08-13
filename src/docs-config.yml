@@ -1,5 +1,5 @@
 source: /module
-destination: /site
+destination: /var/site
 theme: docs-theme
 
 defaults:
