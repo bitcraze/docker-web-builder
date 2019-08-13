@@ -22,6 +22,7 @@ RUN gem install jekyll jekyll-feed html-proofer
 ADD docs-theme/ /docs-theme/
 RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-theme-0.1.0.gem;
 
+RUN mkdir /var/site; chmod 777 /var/site
 ADD docs-config.yml /docs-config.yml
 
 WORKDIR /module
