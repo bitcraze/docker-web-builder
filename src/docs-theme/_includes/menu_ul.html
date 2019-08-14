@@ -23,7 +23,7 @@
   {% endif %}
 
   <li>
-    <a title="{{m_title}}" href="{{m_url}}">{{m_title}}</a>
+    <a title="{{m_title}}" href="{{m_url | remove: '.html' | append: '/'}}">{{m_title}}</a>
   </li>
 {% endfor %}
 </ul>
