@@ -12,6 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV DOCKER_VERSION 19.03.1
 RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar --strip-components=1 -xvzf docker-${DOCKER_VERSION}.tgz -C /usr/local/bin
 
+# Install kubectl
+ENV KUBECTL_VERSION 1.14.6
+RUN curl -L https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
+ && chmod +x /usr/local/bin/kubectl
+
 # Set the locale to make ruby open text files as UTF-8 default
 # (Encoding.default_external). Required to make html-proofer handle UTF-8.
 ENV LANG C.UTF-8
