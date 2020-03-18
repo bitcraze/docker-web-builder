@@ -2,6 +2,14 @@ source: /module
 destination: /var/site
 theme: docs-theme
 
+permalink: /:categories/:title/  # Generate correct urls based on file path
+
+# Strict error checking
+liquid:
+  error_mode: strict
+  strict_variables: true
+  strict_filters: true
+
 defaults:
   -
     scope:
