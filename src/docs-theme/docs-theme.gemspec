@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Simple jekyll theme for docs locally"
   spec.license       = "MIT"
 
-  spec.files         = spec.files = Dir['_includes/*'] + Dir['_layouts/*']
+  spec.files         = spec.files = Dir['_includes/*'] + Dir['_layouts/*'] + Dir['assets/*']
 
   spec.add_runtime_dependency "jekyll", "~> 3.8"
 

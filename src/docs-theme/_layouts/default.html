@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
     <title>{{ page.title }}</title>
 </head>
 <body>
 
-<div style="height: 100%; width: 20%; position: fixed; top: 0; left: 0; overflow-x: hidden; padding-top: 60px; border-right: 1px gray solid;">
+<div class="menu">
     {% include menu.html %}
 </div>
-<div style="margin-left: 20%; padding-left: 20px;">
+<div class="content">
     <h1>{{page.title}}</h1>
     {{content}}
 </div>
