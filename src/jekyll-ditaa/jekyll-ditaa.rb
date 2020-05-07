@@ -25,11 +25,22 @@ module Jekyll
 
       def initialize(tag_name, options, tokens)
         super
-        @ditaa_exists = system('which ditaa > /dev/null 2>&1')
+        @ditaa_jar_location = %x|which ditaa|.strip
+        @ditaa_exists = (not @ditaa_jar_location.empty?)
         @ditaa_options = options
+
+        @alt_text = ""
         if @ditaa_options.include? "--alt"
-          @alt_text = @ditaa_options.scan(/--alt "([^"]*)"/).last.first
-          @ditaa_options = @ditaa_options.sub /--alt "([">]*)"/, ''
+          tokens = @ditaa_options.scan(/--alt "([^"]*)"/)
+          if not tokens.empty?
+            @alt_text = tokens.first.last
+          end
+
+          @ditaa_options = @ditaa_options.sub /--alt "([^"]*)"/, ''
+        end
+
+        if @alt_text.empty?
+          raise "An alt text is required when using ditaa, please add a desciptive text to the tag, like this: {% ditaa --alt \"Text describing the diagram\" %}"
         end
       end
 
@@ -85,9 +96,7 @@ module Jekyll
             f.write(source)
             f.close
 
-            # Modified by Bitcraze
-            # @png_exists = system('ditaa ' + f.path + ' ' + png_path + args)
-            @png_exists = system('java -jar /usr/share/ditaa/ditaa.jar ' + f.path + ' ' + png_path + args)
+            @png_exists = system('java -jar ' + @ditaa_jar_location + ' ' + f.path + ' ' + png_path + args)
 
             f.unlink  # cleanup of temporary file
           end
@@ -98,7 +107,7 @@ module Jekyll
           st = Jekyll::StaticFile.new(site, site.source, @@output_dir, png_name)
           @@generated_files << st
           site.static_files << st
-          return '<img src="' + web_path + '" alt="' + @alt_text.to_s + '"/>'
+          return '<img src="' + web_path + '" alt="' + @alt_text + '"/>'
         else
           # return the code if failure
           return '<pre><code>' + source + '</code></pre>'
