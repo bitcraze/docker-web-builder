@@ -16,3 +16,9 @@ defaults:
       path: "" # an empty string here means all files in the project
     values:
       layout: "default"
+
+plugins:
+  - jekyll-ditaa
+
+ditaa_debug_mode: false
+ditaa_output_directory: /var/ditaa

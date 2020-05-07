@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		php7.3-cli php-xml \
 		zip unzip \
 		locales \
+		ditaa \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Install docker
@@ -21,6 +22,10 @@ RUN gem install jekyll jekyll-feed html-proofer
 # Create gem for the docs jekyll theme
 ADD docs-theme/ /docs-theme/
 RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-theme-0.1.0.gem;
+
+# Create a gem for the Jekyll-ditaa plugin
+ADD jekyll-ditaa/ /jekyll-ditaa/
+RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/jekyll-ditaa-1.0.0.gem;
 
 RUN mkdir /var/site; chmod 777 /var/site
 ADD docs-config.yml /docs-config.yml
