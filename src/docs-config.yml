@@ -1,6 +1,10 @@
 source: /module
 destination: /var/site
 theme: docs-theme
+data_dir : docs/_data
+
+disable_disk_cache: true
+livereload: true
 
 permalink: /:categories/:title/  # Generate correct urls based on file path
 
@@ -9,6 +13,10 @@ liquid:
   error_mode: strict
   strict_variables: true
   strict_filters: true
+
+relative_links:
+  enabled:     true
+  collections: false
 
 defaults:
   -
@@ -19,6 +27,7 @@ defaults:
 
 plugins:
   - jekyll-ditaa
+  - jekyll-relative-links
 
 ditaa_debug_mode: false
 ditaa_output_directory: /var/ditaa

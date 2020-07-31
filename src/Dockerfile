@@ -51,7 +51,7 @@ RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${
 # (Encoding.default_external). Required to make html-proofer handle UTF-8.
 ENV LANG C.UTF-8
 
-RUN gem install jekyll jekyll-feed html-proofer
+RUN gem install jekyll:4.1.1 jekyll-feed html-proofer
 
 # Create gem for the docs jekyll theme
 ADD docs-theme/ /docs-theme/
@@ -60,6 +60,12 @@ RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-t
 # Create a gem for the Jekyll-ditaa plugin
 ADD jekyll-ditaa/ /jekyll-ditaa/
 RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/jekyll-ditaa-1.0.1.gem;
+
+# Create a gem for the Jekyll-relative-links plugin
+# Should be replaced with the official gem when pushed to ruby gems
+ADD jekyll-relative-links/ /jekyll-relative-links/
+RUN cd /jekyll-relative-links; gem build jekyll-relative-links.gemspec; gem install /jekyll-relative-links/jekyll-relative-links-0.6.2.gem;
+# RUN gem install jekyll-relative-links
 
 RUN mkdir /var/site; chmod 777 /var/site
 ADD docs-config.yml /docs-config.yml
