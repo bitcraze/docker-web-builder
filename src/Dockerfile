@@ -67,7 +67,12 @@ ADD jekyll-relative-links/ /jekyll-relative-links/
 RUN cd /jekyll-relative-links; gem build jekyll-relative-links.gemspec; gem install /jekyll-relative-links/jekyll-relative-links-0.6.2.gem;
 # RUN gem install jekyll-relative-links
 
-RUN mkdir /var/site; chmod 777 /var/site
+RUN mkdir /var/site && chmod 777 /var/site
 ADD docs-config.yml /docs-config.yml
+
+# The toolbelt docs command, maps <repo>/docs into /module/docs. On linux /module/docs will be owned by the correct user
+# while /module is owned by root. The Jekyll server that serves the docs will try to create a meta data file in /module
+# and will fail unless we make sure it exists and can be written by all users.
+RUN mkdir /module && chmod 777 /module
 
 WORKDIR /module
