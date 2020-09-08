@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+    <!-- Note the version of the katex CSS must match the version of katex used by jekyll, see the docker file -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.0/katex.min.css" type='text/css' media='all'>
     <title>{{ page.title }}</title>
 </head>
 <body>

@@ -51,7 +51,20 @@ RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${
 # (Encoding.default_external). Required to make html-proofer handle UTF-8.
 ENV LANG C.UTF-8
 
-RUN gem install jekyll:4.1.1 jekyll-feed html-proofer
+# Jekyll is used to generate HTML from markdown
+# html-proofer is used to validate html (including links)
+# kramdown-math-katex is used to suport LaTex in the markdown, mainly for math
+# therubyracer adds js support that is required by katex
+RUN gem install jekyll:4.1.1 jekyll-feed html-proofer kramdown-math-katex:1.0.1 therubyracer
+
+# A note on kaTex and CSS
+# The version of kaTex (used to generate html from LaTex) and the kaTex CSS that is used in the theme in this image and
+# the bitcraze website theme, must match. If you update kramdown-math-katex, check the version of the CSS as well.
+# The kramdown-math-katex ruby gem uses the katex ruby gem (https://github.com/glebm/katex-ruby) and it can tell
+# you the version of katex that is used:
+# 	irb
+# 	require 'katex'
+#	Katex::KATEX_VERSION
 
 # Create gem for the docs jekyll theme
 ADD docs-theme/ /docs-theme/
