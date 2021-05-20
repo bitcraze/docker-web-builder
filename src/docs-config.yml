@@ -28,7 +28,6 @@ defaults:
 plugins:
   - jekyll-ditaa
   - jekyll-relative-links
-  - jekyll-relative-links
 
 ditaa_debug_mode: false
 ditaa_output_directory: /var/ditaa

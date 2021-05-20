@@ -1,12 +1,11 @@
-FROM ruby:2.6.3
-
-MAINTAINER Kristoffer Richardsson <kristoffer@bitcraze.io>
+FROM ruby:3.0.1-buster
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		php7.3-cli php-xml \
 		zip unzip \
 		locales \
 		ditaa \
+		nodejs \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Add wkhtmltopdf, see https://hub.docker.com/r/icalialabs/wkhtmltopdf and https://github.com/IcaliaLabs/docker-wkhtmltopdf
@@ -44,7 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=icalialabs/wkhtmltopdf:0.12.5-stretch /usr/local/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 # Install docker
-ENV DOCKER_VERSION 19.03.1
+ENV DOCKER_VERSION 20.10.6
 RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar --strip-components=1 -xvzf docker-${DOCKER_VERSION}.tgz -C /usr/local/bin
 
 # Set the locale to make ruby open text files as UTF-8 default
@@ -55,7 +54,7 @@ ENV LANG C.UTF-8
 # html-proofer is used to validate html (including links)
 # kramdown-math-katex is used to suport LaTex in the markdown, mainly for math
 # therubyracer adds js support that is required by katex
-RUN gem install jekyll:4.1.1 jekyll-feed html-proofer kramdown-math-katex:1.0.1 therubyracer
+RUN gem install jekyll:4.2.0 jekyll-feed html-proofer kramdown-math-katex:1.0.1 therubyracer webrick
 
 # A note on kaTex and CSS
 # The version of kaTex (used to generate html from LaTex) and the kaTex CSS that is used in the theme in this image and
