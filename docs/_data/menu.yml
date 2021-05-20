@@ -1,0 +1,4 @@
+- page_id: home
+- title: Sub menu
+  subs:
+    - {page_id: sub_page}
