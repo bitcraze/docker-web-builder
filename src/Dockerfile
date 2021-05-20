@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		locales \
 		ditaa \
 		nodejs \
+		doxygen \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Add wkhtmltopdf, see https://hub.docker.com/r/icalialabs/wkhtmltopdf and https://github.com/IcaliaLabs/docker-wkhtmltopdf
