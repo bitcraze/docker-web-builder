@@ -33,6 +33,10 @@ This should be rendered as nice graphics
 
 ## LaTex
 
-This should be rendered as a nice formula
+This should be rendered as a nice formulas
+
+$$\vec{g_r} = \begin{pmatrix}
+\frac{d\alpha_p}{dx} & \frac{d\alpha_p}{dy} & \frac{d\alpha_p}{dz}
+\end{pmatrix}$$
 
 $$\lim_{h\to 0}\frac{f(x+h)-f(x)}{h}$$

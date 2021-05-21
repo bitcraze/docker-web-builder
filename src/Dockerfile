@@ -5,7 +5,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		zip unzip \
 		locales \
 		ditaa \
-		nodejs \
 		doxygen \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -54,8 +53,8 @@ ENV LANG C.UTF-8
 # Jekyll is used to generate HTML from markdown
 # html-proofer is used to validate html (including links)
 # kramdown-math-katex is used to suport LaTex in the markdown, mainly for math
-# therubyracer adds js support that is required by katex
-RUN gem install jekyll:4.2.0 jekyll-feed html-proofer kramdown-math-katex:1.0.1 therubyracer webrick
+# mini_racer adds js support that is required by katex
+RUN gem install jekyll:4.2.0 jekyll-feed html-proofer kramdown-math-katex:1.0.1 mini_racer webrick
 
 # A note on kaTex and CSS
 # The version of kaTex (used to generate html from LaTex) and the kaTex CSS that is used in the theme in this image and
