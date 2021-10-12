@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		locales \
 		ditaa \
 		doxygen \
+		python3-pip \
+		python3-setuptools \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Add wkhtmltopdf, see https://hub.docker.com/r/icalialabs/wkhtmltopdf and https://github.com/IcaliaLabs/docker-wkhtmltopdf
@@ -41,6 +43,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   	&& rm -rf /var/lib/apt/lists/*
 
 COPY --from=icalialabs/wkhtmltopdf:0.12.5-stretch /usr/local/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+
+
+# Install pdoc3 for generating Python documentation
+RUN pip3 install pdoc3
 
 # Install docker
 ENV DOCKER_VERSION 20.10.6
