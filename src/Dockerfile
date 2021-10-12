@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		doxygen \
 		python3-pip \
 		python3-setuptools \
+		python3-setuptools-scm \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Add wkhtmltopdf, see https://hub.docker.com/r/icalialabs/wkhtmltopdf and https://github.com/IcaliaLabs/docker-wkhtmltopdf
@@ -46,7 +47,8 @@ COPY --from=icalialabs/wkhtmltopdf:0.12.5-stretch /usr/local/bin/wkhtmltopdf /us
 
 
 # Install pdoc3 for generating Python documentation
-RUN pip3 install pdoc3
+RUN pip3 install wheel
+RUN pip3 install pdoc3==0.9.2
 
 # Install docker
 ENV DOCKER_VERSION 20.10.6
