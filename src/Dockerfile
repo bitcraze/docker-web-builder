@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		python3-pip \
 		python3-setuptools \
 		python3-setuptools-scm \
+		python3-usb \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Add wkhtmltopdf, see https://hub.docker.com/r/icalialabs/wkhtmltopdf and https://github.com/IcaliaLabs/docker-wkhtmltopdf
