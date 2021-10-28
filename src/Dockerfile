@@ -82,6 +82,10 @@ RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-t
 ADD jekyll-ditaa/ /jekyll-ditaa/
 RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/jekyll-ditaa-1.0.1.gem;
 
+# Create a gem for the include-generated plugin
+ADD include-generated/ /include-generated/
+RUN cd /include-generated; gem build include-generated.gemspec; gem install /include-generated/include-generated-1.0.0.gem;
+
 # Create a gem for the Jekyll-relative-links plugin
 # Should be replaced with the official gem when pushed to ruby gems
 ADD jekyll-relative-links/ /jekyll-relative-links/
