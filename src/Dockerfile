@@ -47,9 +47,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=icalialabs/wkhtmltopdf:0.12.5-stretch /usr/local/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 
-# Install pdoc3 for generating Python documentation
-RUN pip3 install wheel
-RUN pip3 install pdoc3==0.9.2
+# Install pdoc3 for generating Python documentation and
+# pybib for generating publication lists from bib files
+RUN pip3 install wheel pdoc3==0.9.2 pybib==2.3.2
+
 
 # Install docker
 ENV DOCKER_VERSION 20.10.6
