@@ -49,7 +49,7 @@ COPY --from=icalialabs/wkhtmltopdf:0.12.5-stretch /usr/local/bin/wkhtmltopdf /us
 
 # Install pdoc3 for generating Python documentation and
 # pybib for generating publication lists from bib files
-RUN pip3 install wheel pdoc3==0.9.2 pybtex==0.24.0 libusb-package==1.0.24.2
+RUN pip3 install wheel pdoc3==0.9.2 pybtex==0.24.0
 
 
 # Install docker
