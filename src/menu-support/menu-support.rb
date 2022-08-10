@@ -1,12 +1,11 @@
 module Jekyll
-
   class GeneratedMenuBase < Liquid::Tag
     def initialize(tag_name, text, tokens)
       super
       @params = parse_args(text)
     end
 
-    def render_level(site, menu_tree, level, max_level)
+    def render_level(site, menu_tree, level, max_level, current_url)
       result = '<ul>'
 
       menu_tree.each do |item|
@@ -23,15 +22,18 @@ module Jekyll
           title = item['title']
         end
 
+        html_class = ''
+        html_class = ' class="active"' if current_url == url
+
         if url
-          result += '<li><a title="' + title + '" href="' + url + '">' + title + '</a></li>'
+          result += '<li><a title="' + title + '" href="' + url + '"' + html_class + '>' + title + '</a></li>'
         else
           result += '<li>' + title + '</li>'
         end
 
         if item.key? 'subs'
           next_level = level + 1
-          result += render_level(site, item['subs'], next_level, max_level) if next_level < max_level
+          result += render_level(site, item['subs'], next_level, max_level, current_url) if next_level < max_level
         end
 
       end
@@ -58,7 +60,7 @@ module Jekyll
 
     def build_config_from_pages(site, root_url, max_level, root_style)
       # Generate a tree of all pages and populate with the data that is available
-      tree = {subs: {}, page: nil, token: 'root'}
+      tree = {subs: {}, page: nil, token: 'root', title: 'root'}
       site.pages.each do |page|
         add_page_to_tree(page, tree, root_url)
       end
@@ -79,11 +81,12 @@ module Jekyll
         node = tree
         path.each do |token|
           if ! node[:subs].key? token
-            node[:subs][token] = {subs: {}, page: nil, token: token}
+            node[:subs][token] = {subs: {}, page: nil, token: token, title: token}
           end
           node = node[:subs][token]
         end
         node[:page] = page
+        node[:title] = page['title']
       end
     end
 
@@ -105,7 +108,7 @@ module Jekyll
       end
 
       if node[:subs].length > 0
-        node[:subs].values.each do |sub|
+        node[:subs].values.sort{|a,b| a[:title].downcase <=> b[:title].downcase}.each do |sub|
           generate_menu_conf_from_tree(sub, sub_append_point, :root_style_as_tree)
         end
       end
@@ -138,9 +141,11 @@ module Jekyll
 
       raise "root url must start and end with '/'" if not (root_url.start_with?('/') && root_url.end_with?('/'))
 
+      current_url = context['page']['url']
+
       site = context.registers[:site]
       menu_tree = get_menu_config(site, menu_def, menu_key, root_url, max_level, :root_style_flatten)
-      render_level(site, menu_tree, 0, max_level)
+      render_level(site, menu_tree, 0, max_level, current_url)
     end
   end
 
@@ -155,7 +160,7 @@ module Jekyll
 
       site = context.registers[:site]
       menu_tree = get_menu_config(site, menu_def, menu_key, root_url, max_level, :root_style_do_not_add)
-      render_level(site, menu_tree, 0, max_level)
+      render_level(site, menu_tree, 0, max_level, root_url)
     end
   end
 end
