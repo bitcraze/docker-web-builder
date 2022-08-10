@@ -59,7 +59,7 @@ module Jekyll
     end
 
     def build_config_from_pages(site, root_url, max_level, root_style)
-      # Generate a tree of all pages and populate with the data that is available
+      # Generate a tree of all pages and populate it with the data that is available
       tree = {subs: {}, page: nil, token: 'root', title: 'root'}
       site.pages.each do |page|
         add_page_to_tree(page, tree, root_url)
@@ -132,6 +132,28 @@ module Jekyll
     end
   end
 
+  # This tag is used to add a side menu to repository docs
+  #
+  # It generates the menu based on the files (actually URLs) in the file system and organizes the entries as a tree.
+  # The title of the menu entries are based on the page titles. For sub-directories the index.md file will be used if
+  # it exists, otherwise the page_id will be used as the title.
+  #
+  # The root level is rendered as a member of the first level of the menu to avoid always wasting one level
+  #
+  # Usage:
+  # {% side_menu 3; /docs/ %} - this will generate a menu with 3 levels, based on the page-tree on URL "/docs/"
+  #
+  #
+  # This tag is also compatible with a _data/menu.yml file that defines the menu. This is important when building old
+  # versions of repositories for our web.
+  #
+  # Usage:
+  # {% side_menu 3; /docs/; mymenu %} - this will generate a menu with 3 levels based on the _data/mymenu.yml file
+  #
+  # If more than one menu is defined in the file, the root key can be specified
+  # {% side_menu 3; /docs/; mymenu; mykey %} - this will generate a menu with 3 levels based on the _data/mymenu.yml
+  # file, for the menu defined under the "mykey" key.
+
   class SideMenu < GeneratedMenuBase
     def render(context)
       max_level = use_arg(@params, 0, 2).to_i
@@ -149,6 +171,15 @@ module Jekyll
     end
   end
 
+
+  # This tag is used to generate a menu for a sub page. Only use it in an index.md file in a directory in the doc tree,
+  # it tag does not work on other pages.
+  #
+  # Usage:
+  # {% sub_page_menu %} - this will generate a one-level menu of the sub-pages of this directory
+  #
+  # It is possible to specify the depth of the menu as well
+  # {% sub_page_menu 2 %}
   class SubPageMenu < GeneratedMenuBase
     def render(context)
       max_level = use_arg(@params, 0, 1).to_i
