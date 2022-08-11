@@ -23,9 +23,9 @@ module Jekyll
         html_class = ' class="active"' if current_url == url
 
         if url
-          result += '<li><a title="' + title + '" href="' + url + '"' + html_class + '>' + title + '</a></li>'
+          result += '<li><a title="' + title + '" href="' + url + '"' + html_class + '>' + title + '</a>'
         else
-          result += '<li>' + title + '</li>'
+          result += '<li><span>' + title + '</span>'
         end
 
         if item.key? 'subs'
@@ -33,6 +33,7 @@ module Jekyll
           result += render_level(site, item['subs'], next_level, max_level, current_url) if next_level < max_level
         end
 
+        result += '</li>'
       end
 
       result += '</ul>'
