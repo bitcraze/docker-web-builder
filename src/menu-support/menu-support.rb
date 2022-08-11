@@ -1,10 +1,7 @@
+require "liquid/variable"
+
 module Jekyll
   class GeneratedMenuBase < Liquid::Tag
-    def initialize(tag_name, text, tokens)
-      super
-      @params = parse_args(text)
-    end
-
     def render_level(site, menu_tree, level, max_level, current_url)
       result = '<ul>'
 
@@ -126,8 +123,8 @@ module Jekyll
       parts.map {|part| part.strip}
     end
 
-    def use_arg(args, index, default_value)
-      return args[index] if args.length > index
+    def use_arg(variable, default_value, context)
+      return variable.render(context) if variable
       return default_value
     end
   end
@@ -140,28 +137,40 @@ module Jekyll
   #
   # The root level is rendered as a member of the first level of the menu to avoid always wasting one level
   #
+  # This tag is a bit different from other Bitcraze tags as the parameters are fully interpreted (to support variables)
+  # as opposed to other tags, where parameters are just used as is. This means that strings must be quoted.
+  #
   # Usage:
-  # {% side_menu 3; /docs/ %} - this will generate a menu with 3 levels, based on the page-tree on URL "/docs/"
+  # {% side_menu 3; "/docs/" %} - this will generate a menu with 3 levels, based on the page-tree on URL "/docs/"
   #
   #
   # This tag is also compatible with a _data/menu.yml file that defines the menu. This is important when building old
   # versions of repositories for our web.
   #
   # Usage:
-  # {% side_menu 3; /docs/; mymenu %} - this will generate a menu with 3 levels based on the _data/mymenu.yml file
+  # {% side_menu 3; "/docs/"; "mymenu" %} - this will generate a menu with 3 levels based on the _data/mymenu.yml file
   #
   # If more than one menu is defined in the file, the root key can be specified
-  # {% side_menu 3; /docs/; mymenu; mykey %} - this will generate a menu with 3 levels based on the _data/mymenu.yml
+  # {% side_menu 3; "/docs/"; "mymenu"; "mykey" %} - this will generate a menu with 3 levels based on the _data/mymenu.yml
   # file, for the menu defined under the "mykey" key.
 
   class SideMenu < GeneratedMenuBase
-    def render(context)
-      max_level = use_arg(@params, 0, 2).to_i
-      root_url = use_arg(@params, 1, '/')
-      menu_def = use_arg(@params, 2, 'menu')
-      menu_key = use_arg(@params, 3, nil)
+    def initialize(tag_name, text, tokens)
+      super
+      params = parse_args(text)
+      @max_level = params.length > 0 ? Liquid::Variable.new(params[0], parse_context): nil
+      @root_url = params.length > 1 ? Liquid::Variable.new(params[1], parse_context): nil
+      @menu_def = params.length > 2 ? Liquid::Variable.new(params[2], parse_context): nil
+      @menu_key = params.length > 3 ? Liquid::Variable.new(params[3], parse_context): nil
+    end
 
-      raise "root url must start and end with '/'" if not (root_url.start_with?('/') && root_url.end_with?('/'))
+    def render(context)
+      max_level = use_arg(@max_level, 2, context).to_i
+      root_url = use_arg(@root_url, '/', context)
+      menu_def = use_arg(@menu_def, 'menu', context)
+      menu_key = use_arg(@menu_key, nil, context)
+
+      raise "root url must start and end with '/', got '" + root_url + "'" if not (root_url.start_with?('/') && root_url.end_with?('/'))
 
       current_url = context['page']['url']
 
@@ -181,13 +190,19 @@ module Jekyll
   # It is possible to specify the depth of the menu as well
   # {% sub_page_menu 2 %}
   class SubPageMenu < GeneratedMenuBase
+    def initialize(tag_name, text, tokens)
+      super
+      params = parse_args(text)
+      @max_level = params.length > 0 ? Liquid::Variable.new(params[0], parse_context): nil
+    end
+
     def render(context)
-      max_level = use_arg(@params, 0, 1).to_i
+      max_level = use_arg(@max_level, 1, context).to_i
       root_url = context['page']['url']
       menu_def = nil
       menu_key = nil
 
-      raise "root url must start and end with '/'" if not (root_url.start_with?('/') && root_url.end_with?('/'))
+      raise "root url must start and end with '/', got '" + root_url + "'" if not (root_url.start_with?('/') && root_url.end_with?('/'))
 
       site = context.registers[:site]
       menu_tree = get_menu_config(site, menu_def, menu_key, root_url, max_level, :root_style_do_not_add)
