@@ -23,7 +23,7 @@ module Jekyll
         html_class = ' class="active"' if current_url == url
 
         if url
-          result += '<li><a title="' + title + '" href="' + url + '"' + html_class + '>' + title + '</a>'
+          result += '<li' + html_class + '><a title="' + title + '" href="' + url + '">' + title + '</a>'
         else
           result += '<li><span>' + title + '</span>'
         end
