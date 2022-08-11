@@ -50,8 +50,20 @@ module Jekyll
     def read_config_from_file(site, name, key)
       return nil if not name
 
+      # Read the config. This can be either an Array, if there is a meny.yml file, or a Hash if we are building the web
+      # and have generated a file with all repo menus combined.
       menu_tree = site.data[name]
-      menu_tree = menu_tree[key] if key
+      if ! menu_tree
+        return nil
+      end
+
+      if key
+        if menu_tree.class == Hash
+          return menu_tree[key]
+        end
+
+        return nil
+      end
 
       return menu_tree
     end
