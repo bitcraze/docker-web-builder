@@ -93,6 +93,10 @@ ADD jekyll-relative-links/ /jekyll-relative-links/
 RUN cd /jekyll-relative-links; gem build jekyll-relative-links.gemspec; gem install /jekyll-relative-links/jekyll-relative-links-0.6.2.gem;
 # RUN gem install jekyll-relative-links
 
+# Create a gem for repository doc menus
+ADD menu-support/ /menu-support/
+RUN cd /menu-support; gem build menu-support.gemspec; gem install /menu-support/menu-support-1.0.0.gem;
+
 RUN mkdir /var/site && chmod 777 /var/site
 ADD docs-config.yml /docs-config.yml
 
