@@ -6,34 +6,38 @@ module Jekyll
       result = '<ul>'
 
       menu_tree.each do |item|
-        title = 'TODO'
+        title = nil
         url = nil
 
         if item.key? 'page_id'
           page = get_page(site, item['page_id'])
-          title = page['title']
-          url = page['url']
+          if page
+            title = page['title']
+            url = page['url']
+          end
         end
 
         if item.key? 'title'
           title = item['title']
         end
 
-        html_class = ''
-        html_class = ' class="active"' if current_url == url
+        if title
+          html_class = ''
+          html_class = ' class="active"' if current_url == url
 
-        if url
-          result += '<li' + html_class + '><a title="' + title + '" href="' + url + '">' + title + '</a>'
-        else
-          result += '<li><span>' + title + '</span>'
+          if url
+            result += '<li' + html_class + '><a title="' + title + '" href="' + url + '">' + title + '</a>'
+          else
+            result += '<li><span>' + title + '</span>'
+          end
+
+          if item.key? 'subs'
+            next_level = level + 1
+            result += render_level(site, item['subs'], next_level, max_level, current_url) if next_level < max_level
+          end
+
+          result += '</li>'
         end
-
-        if item.key? 'subs'
-          next_level = level + 1
-          result += render_level(site, item['subs'], next_level, max_level, current_url) if next_level < max_level
-        end
-
-        result += '</li>'
       end
 
       result += '</ul>'
