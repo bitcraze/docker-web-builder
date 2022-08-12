@@ -70,7 +70,7 @@ module Jekyll
 
     def build_config_from_pages(site, root_url, max_level, root_style)
       # Generate a tree of all pages and populate it with the data that is available
-      tree = {subs: {}, page: nil, token: 'root', title: 'root'}
+      tree = {subs: {}, page: nil, token: 'root', title: 'root', sort_order: nil}
       site.pages.each do |page|
         add_page_to_tree(page, tree, root_url)
       end
@@ -94,14 +94,28 @@ module Jekyll
           node = tree
           path.each do |token|
             if ! node[:subs].key? token
-              node[:subs][token] = {subs: {}, page: nil, token: token, title: token}
+              node[:subs][token] = {subs: {}, page: nil, token: token, title: token, sort_order: nil}
             end
             node = node[:subs][token]
           end
           node[:page] = page
           node[:title] = title
+          node[:sort_order] = page['sort_order']
         end
       end
+    end
+
+    def sorter(a, b)
+      if a[:sort_order].class == b[:sort_order].class
+        sort_order_cmp = a[:sort_order] <=> b[:sort_order]
+        return sort_order_cmp if sort_order_cmp != 0
+        return a[:title].downcase <=> b[:title].downcase
+      end
+
+      return 1 if a[:sort_order] == nil
+      return -1 if b[:sort_order] == nil
+
+      raise "Sort order types are different, can not compare" if a[:sort_order].class != b[:sort_order].class
     end
 
     def generate_menu_conf_from_tree(node, menu_conf, root_style)
@@ -122,7 +136,7 @@ module Jekyll
       end
 
       if node[:subs].length > 0
-        node[:subs].values.sort{|a,b| a[:title].downcase <=> b[:title].downcase}.each do |sub|
+        node[:subs].values.sort{|a, b| sorter(a, b)}.each do |sub|
           generate_menu_conf_from_tree(sub, sub_append_point, :root_style_as_tree)
         end
       end
