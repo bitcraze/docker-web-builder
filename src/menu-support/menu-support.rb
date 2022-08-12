@@ -82,21 +82,25 @@ module Jekyll
     end
 
     def add_page_to_tree(page, tree, root_url)
-      url = page['url']
+      # Skip pages without a title, these are generated redirect pages
+      title = page['title']
+      if title
+        url = page['url']
 
-      if url.start_with?(root_url)
-        to_remove = root_url.length
-        path = url[to_remove..].split('/')
+        if url.start_with?(root_url)
+          to_remove = root_url.length
+          path = url[to_remove..].split('/')
 
-        node = tree
-        path.each do |token|
-          if ! node[:subs].key? token
-            node[:subs][token] = {subs: {}, page: nil, token: token, title: token}
+          node = tree
+          path.each do |token|
+            if ! node[:subs].key? token
+              node[:subs][token] = {subs: {}, page: nil, token: token, title: token}
+            end
+            node = node[:subs][token]
           end
-          node = node[:subs][token]
+          node[:page] = page
+          node[:title] = title
         end
-        node[:page] = page
-        node[:title] = page['title']
       end
     end
 
