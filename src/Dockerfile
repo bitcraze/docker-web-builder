@@ -77,7 +77,7 @@ RUN gem install jekyll:4.2.0 jekyll-feed html-proofer kramdown-math-katex:1.0.1 
 
 # Create gem for the docs jekyll theme
 ADD docs-theme/ /docs-theme/
-RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-theme-0.1.0.gem;
+RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-theme-0.2.0.gem;
 
 # Create a gem for the Jekyll-ditaa plugin
 ADD jekyll-ditaa/ /jekyll-ditaa/
@@ -95,7 +95,7 @@ RUN cd /jekyll-relative-links; gem build jekyll-relative-links.gemspec; gem inst
 
 # Create a gem for repository doc menus
 ADD menu-support/ /menu-support/
-RUN cd /menu-support; gem build menu-support.gemspec; gem install /menu-support/menu-support-1.0.0.gem;
+RUN cd /menu-support; gem build menu-support.gemspec; gem install /menu-support/menu-support-1.1.0.gem;
 
 RUN mkdir /var/site && chmod 777 /var/site
 ADD docs-config.yml /docs-config.yml

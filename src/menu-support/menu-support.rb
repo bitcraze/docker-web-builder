@@ -2,9 +2,95 @@ require "liquid/variable"
 
 module Jekyll
   class GeneratedMenuBase < Liquid::Tag
-    def render_level(site, menu_tree, level, max_level, current_url)
-      result = '<ul>'
+    def render_level(site, menu_tree)
+      result = ''
 
+      menu_tree.each do |item|
+        title = item['title']
+        if title
+          url = item['url']
+          is_the_active_menu = item['is_the_active_menu']
+          has_hidden_children = item['has_hidden_children']
+
+          html_class = ''
+          html_class = 'active' if item['is_the_active_menu']
+          html_class += ' hidden-children' if item['has_hidden_children']
+          html_class = ' class="' + html_class + '"' if html_class
+
+          if url
+            result += '<li' + html_class + '><a title="' + title + '" href="' + url + '">' + title + '</a>'
+          else
+            result += '<li><span>' + title + '</span>'
+          end
+
+          result += render_level(site, item['subs'])
+        end
+
+        result += '</li>'
+      end
+
+      return '<ul>' + result + '</ul>'
+    end
+
+    def get_menu_config(site, name, key, root_url, max_level, root_style)
+      menu_tree = read_config_from_file(site, name, key)
+      menu_tree = build_config_from_pages(site, root_url, max_level, root_style) if not menu_tree
+
+      menu_tree
+    end
+
+    # Remove nodes that are not visible and augment the nodes with all data needed for rendering
+    def prune_and_augment_tree(site, menu_tree, current_url, max_level_visible, max_level)
+      augment_tree(site, menu_tree)
+      mark_active_node(menu_tree, current_url, 0, max_level_visible)
+      prune_tree(menu_tree, 0, max_level_visible, max_level)
+    end
+
+    def prune_tree(menu_tree, level, max_level_visible, max_level)
+      menu_tree.each do |item|
+        next_level = level + 1
+        keep_next_level = (next_level < max_level_visible)
+        if item['in_active_sub_tree']
+          keep_next_level = (next_level < max_level)
+        end
+
+        if keep_next_level
+          prune_tree(item['subs'], next_level, max_level_visible, max_level)
+        else
+          if item['subs'].length > 0 && level < max_level
+            item['has_hidden_children'] = true
+          end
+          item['subs'] = []
+        end
+      end
+    end
+
+    def mark_active_node(menu_tree, current_url, level, max_level_visible)
+      found_active_node = false
+
+      menu_tree.each do |item|
+        item['is_the_active_menu'] = (item['url'] == current_url)
+        active_node_in_sub_tree = item['is_the_active_menu'] || mark_active_node(item['subs'], current_url, level + 1, max_level_visible)
+
+        if level == (max_level_visible - 1) && active_node_in_sub_tree
+          mark_sub_tree_as_visible(item['subs'])
+          item['in_active_sub_tree'] = true
+        end
+
+        found_active_node ||= active_node_in_sub_tree
+      end
+
+      found_active_node
+    end
+
+    def mark_sub_tree_as_visible(menu_tree)
+      menu_tree.each do |item|
+        item['in_active_sub_tree'] = true
+        mark_sub_tree_as_visible(item['subs'])
+      end
+    end
+
+    def augment_tree(site, menu_tree)
       menu_tree.each do |item|
         title = nil
         url = nil
@@ -22,33 +108,19 @@ module Jekyll
         end
 
         if title
-          html_class = ''
-          html_class = ' class="active"' if current_url == url
-
-          if url
-            result += '<li' + html_class + '><a title="' + title + '" href="' + url + '">' + title + '</a>'
-          else
-            result += '<li><span>' + title + '</span>'
-          end
-
           if item.key? 'subs'
-            next_level = level + 1
-            result += render_level(site, item['subs'], next_level, max_level, current_url) if next_level < max_level
+            augment_tree(site, item['subs'])
+          else
+            item['subs'] = []
           end
 
-          result += '</li>'
+          item['title'] = title
+          item['url'] = url
+          item['is_the_active_menu'] = false
+          item['in_active_sub_tree'] = false
+          item['has_hidden_children'] = false
         end
       end
-
-      result += '</ul>'
-      result
-    end
-
-    def get_menu_config(site, name, key, root_url, max_level, root_style)
-      menu_tree = read_config_from_file(site, name, key)
-      menu_tree = build_config_from_pages(site, root_url, max_level, root_style) if not menu_tree
-
-      menu_tree
     end
 
     def read_config_from_file(site, name, key)
@@ -176,17 +248,17 @@ module Jekyll
   # as opposed to other tags, where parameters are just used as is. This means that strings must be quoted.
   #
   # Usage:
-  # {% side_menu 3; "/docs/" %} - this will generate a menu with 3 levels, based on the page-tree on URL "/docs/"
+  # {% side_menu 3; 2; "/docs/" %} - this will generate a menu with 3 levels, 2 visible by default, based on the page-tree on URL "/docs/"
   #
   #
   # This tag is also compatible with a _data/menu.yml file that defines the menu. This is important when building old
   # versions of repositories for our web.
   #
   # Usage:
-  # {% side_menu 3; "/docs/"; "mymenu" %} - this will generate a menu with 3 levels based on the _data/mymenu.yml file
+  # {% side_menu 3; 2; "/docs/"; "mymenu" %} - this will generate a menu with 3 levels, 2 visible by default, based on the _data/mymenu.yml file
   #
   # If more than one menu is defined in the file, the root key can be specified
-  # {% side_menu 3; "/docs/"; "mymenu"; "mykey" %} - this will generate a menu with 3 levels based on the _data/mymenu.yml
+  # {% side_menu 3; 2; "/docs/"; "mymenu"; "mykey" %} - this will generate a menu with 3 levels, 2 visible by default, based on the _data/mymenu.yml
   # file, for the menu defined under the "mykey" key.
 
   class SideMenu < GeneratedMenuBase
@@ -194,13 +266,15 @@ module Jekyll
       super
       params = parse_args(text)
       @max_level = params.length > 0 ? Liquid::Variable.new(params[0], parse_context): nil
-      @root_url = params.length > 1 ? Liquid::Variable.new(params[1], parse_context): nil
-      @menu_def = params.length > 2 ? Liquid::Variable.new(params[2], parse_context): nil
-      @menu_key = params.length > 3 ? Liquid::Variable.new(params[3], parse_context): nil
+      @max_level_visible = params.length > 1 ? Liquid::Variable.new(params[1], parse_context): nil
+      @root_url = params.length > 2 ? Liquid::Variable.new(params[2], parse_context): nil
+      @menu_def = params.length > 3 ? Liquid::Variable.new(params[3], parse_context): nil
+      @menu_key = params.length > 4 ? Liquid::Variable.new(params[4], parse_context): nil
     end
 
     def render(context)
       max_level = use_arg(@max_level, 2, context).to_i
+      max_level_visible = use_arg(@max_level_visible, max_level, context).to_i
       root_url = use_arg(@root_url, '/', context)
       menu_def = use_arg(@menu_def, 'menu', context)
       menu_key = use_arg(@menu_key, nil, context)
@@ -211,7 +285,8 @@ module Jekyll
 
       site = context.registers[:site]
       menu_tree = get_menu_config(site, menu_def, menu_key, root_url, max_level, :root_style_flatten)
-      render_level(site, menu_tree, 0, max_level, current_url)
+      prune_and_augment_tree(site, menu_tree, current_url, max_level_visible, max_level)
+      render_level(site, menu_tree)
     end
   end
 
@@ -241,7 +316,8 @@ module Jekyll
 
       site = context.registers[:site]
       menu_tree = get_menu_config(site, menu_def, menu_key, root_url, max_level, :root_style_do_not_add)
-      render_level(site, menu_tree, 0, max_level, root_url)
+      prune_and_augment_tree(site, menu_tree, root_url, max_level, max_level)
+      render_level(site, menu_tree)
     end
   end
 end

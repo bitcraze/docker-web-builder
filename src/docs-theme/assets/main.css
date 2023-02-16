@@ -12,6 +12,14 @@ body {
     position: relative;
 }
 
+.menu .active>a {
+    background-color: #EEE
+}
+
+.menu .hidden-children>a:after {
+    content: ' >';
+}
+
 .content {
     padding-left: 20px;
     float: left;
@@ -32,4 +40,9 @@ th, td {
 
 .katex-display>.katex {
     text-align: left;
+}
+
+code {
+    font-family: monospace;
+    background-color: lightgray;
 }

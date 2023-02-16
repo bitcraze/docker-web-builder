@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "menu-support"
-  spec.version       = "1.0.0"
+  spec.version       = "1.1.0"
   spec.authors       = ["Kristoffer Richardsson"]
   spec.homepage      = "https://github.com/bitcraze/docker-web-builder"
 

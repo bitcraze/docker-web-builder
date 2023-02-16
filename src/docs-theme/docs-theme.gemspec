@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "docs-theme"
-  spec.version       = "0.1.0"
+  spec.version       = "0.2.0"
   spec.authors       = ["Kristoffer Richardsson"]
 
   spec.summary       = "Simple jekyll theme for docs locally"
