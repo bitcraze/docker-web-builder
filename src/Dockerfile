@@ -1,7 +1,7 @@
-FROM ruby:3.0.1-buster
+FROM ruby:3.2-bullseye
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		php7.3-cli php-xml \
+		php7.4-cli php-xml \
 		zip unzip \
 		locales \
 		ditaa \
