@@ -81,7 +81,7 @@ RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-t
 
 # Create a gem for the Jekyll-ditaa plugin
 ADD jekyll-ditaa/ /jekyll-ditaa/
-RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/jekyll-ditaa-1.0.1.gem;
+RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/jekyll-ditaa-1.0.2.gem;
 
 # Create a gem for the include-generated plugin
 ADD include-generated/ /include-generated/

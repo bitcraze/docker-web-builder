@@ -59,7 +59,7 @@ module Jekyll
           end
           # Verify and prepare the output folder (src) if it doesn't exist
           src_dir = File.join(site.source, @@output_dir)
-          FileUtils.mkdir_p(src_dir) unless File.exists?(src_dir)
+          FileUtils.mkdir_p(src_dir) unless File.exist?(src_dir)
         end
       end
 
@@ -87,7 +87,7 @@ module Jekyll
 
         if @ditaa_exists
           # only render the new blocks
-          if not File.exists?(png_path)
+          if not File.exist?(png_path)
             args = ' ' + @ditaa_options + ' -o '
             if ! @@debug
               args += ' >/dev/null '  # silent execution
@@ -103,7 +103,7 @@ module Jekyll
         end
 
         # only if the rendering process has taken effect and was successful
-        if File.exists?(png_path)
+        if File.exist?(png_path)
           st = Jekyll::StaticFile.new(site, site.source, @@output_dir, png_name)
           @@generated_files << st
           site.static_files << st
@@ -128,7 +128,7 @@ module Jekyll
 
       # create the destination folder for the rendered images (dest)
       dest_folder = File.join(dest, output_dir)
-      FileUtils.mkdir_p(dest_folder) unless File.exists?(dest_folder)
+      FileUtils.mkdir_p(dest_folder) unless File.exist?(dest_folder)
 
       # get a list of all the generated files
       src_files = []
@@ -142,10 +142,10 @@ module Jekyll
       # clean all previously rendered files not rendered in the actual build
       to_remove = pre_files - src_files
       to_remove.each do |f|
-        File.unlink f if File.exists?(f)
+        File.unlink f if File.exist?(f)
         d, fn = File.split(f)
         df = File.join(dest, output_dir, fn)
-        File.unlink df if File.exists?(df)
+        File.unlink df if File.exist?(df)
       end
     end
   end
