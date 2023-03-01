@@ -1,7 +1,7 @@
-FROM ruby:3.0.1-buster
+FROM ruby:3.2-bullseye
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		php7.3-cli php-xml \
+		php7.4-cli php-xml \
 		zip unzip \
 		locales \
 		ditaa \
@@ -64,7 +64,7 @@ ENV LANG C.UTF-8
 # html-proofer is used to validate html (including links)
 # kramdown-math-katex is used to suport LaTex in the markdown, mainly for math
 # mini_racer adds js support that is required by katex
-RUN gem install jekyll:4.2.0 jekyll-feed html-proofer kramdown-math-katex:1.0.1 mini_racer webrick
+RUN gem install jekyll:4.2.0 jekyll-feed jekyll-relative-links html-proofer kramdown-math-katex:1.0.1 mini_racer webrick
 
 # A note on kaTex and CSS
 # The version of kaTex (used to generate html from LaTex) and the kaTex CSS that is used in the theme in this image and
@@ -77,25 +77,19 @@ RUN gem install jekyll:4.2.0 jekyll-feed html-proofer kramdown-math-katex:1.0.1 
 
 # Create gem for the docs jekyll theme
 ADD docs-theme/ /docs-theme/
-RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-theme-0.1.0.gem;
+RUN cd /docs-theme; gem build docs-theme.gemspec; gem install /docs-theme/docs-theme-0.2.0.gem;
 
 # Create a gem for the Jekyll-ditaa plugin
 ADD jekyll-ditaa/ /jekyll-ditaa/
-RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/jekyll-ditaa-1.0.1.gem;
+RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/jekyll-ditaa-1.0.2.gem;
 
 # Create a gem for the include-generated plugin
 ADD include-generated/ /include-generated/
 RUN cd /include-generated; gem build include-generated.gemspec; gem install /include-generated/include-generated-1.0.0.gem;
 
-# Create a gem for the Jekyll-relative-links plugin
-# Should be replaced with the official gem when pushed to ruby gems
-ADD jekyll-relative-links/ /jekyll-relative-links/
-RUN cd /jekyll-relative-links; gem build jekyll-relative-links.gemspec; gem install /jekyll-relative-links/jekyll-relative-links-0.6.2.gem;
-# RUN gem install jekyll-relative-links
-
 # Create a gem for repository doc menus
 ADD menu-support/ /menu-support/
-RUN cd /menu-support; gem build menu-support.gemspec; gem install /menu-support/menu-support-1.0.0.gem;
+RUN cd /menu-support; gem build menu-support.gemspec; gem install /menu-support/menu-support-1.1.0.gem;
 
 RUN mkdir /var/site && chmod 777 /var/site
 ADD docs-config.yml /docs-config.yml

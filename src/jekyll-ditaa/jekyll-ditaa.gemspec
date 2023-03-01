@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-ditaa"
-  spec.version       = "1.0.1"
+  spec.version       = "1.0.2"
   spec.authors       = ["Matthias Vogelgesang"]
   spec.homepage      = "https://github.com/matze/jekyll-ditaa"
 
