@@ -64,7 +64,7 @@ ENV LANG C.UTF-8
 # html-proofer is used to validate html (including links)
 # kramdown-math-katex is used to suport LaTex in the markdown, mainly for math
 # mini_racer adds js support that is required by katex
-RUN gem install jekyll:4.2.0 jekyll-feed html-proofer kramdown-math-katex:1.0.1 mini_racer webrick
+RUN gem install jekyll:4.2.0 jekyll-feed jekyll-relative-links html-proofer kramdown-math-katex:1.0.1 mini_racer webrick
 
 # A note on kaTex and CSS
 # The version of kaTex (used to generate html from LaTex) and the kaTex CSS that is used in the theme in this image and
@@ -86,12 +86,6 @@ RUN cd /jekyll-ditaa; gem build jekyll-ditaa.gemspec; gem install /jekyll-ditaa/
 # Create a gem for the include-generated plugin
 ADD include-generated/ /include-generated/
 RUN cd /include-generated; gem build include-generated.gemspec; gem install /include-generated/include-generated-1.0.0.gem;
-
-# Create a gem for the Jekyll-relative-links plugin
-# Should be replaced with the official gem when pushed to ruby gems
-ADD jekyll-relative-links/ /jekyll-relative-links/
-RUN cd /jekyll-relative-links; gem build jekyll-relative-links.gemspec; gem install /jekyll-relative-links/jekyll-relative-links-0.6.2.gem;
-# RUN gem install jekyll-relative-links
 
 # Create a gem for repository doc menus
 ADD menu-support/ /menu-support/
