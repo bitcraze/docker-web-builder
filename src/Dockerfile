@@ -48,13 +48,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=icalialabs/wkhtmltopdf:0.12.5-stretch /usr/local/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 
-# Set up environment variables for venv
-ENV VIRTUAL_ENV=/opt/venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# Set PIP_BREAK_SYSTEM_PACKAGES environment variable to 1 to bypass the 
+# externally-managed-environment error when using pip3 install --user.
+# This ensures compatibility with older installation scripts in Docker.
+# Also, configure pip globally to always allow --break-system-packages by setting 
+# it via pip config, providing an additional safeguard for pip commands.
+# Note: We should reconsider these changes when compatibility with --user installs
+# is no longer required, particularly regarding building documentation for older releases.
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+RUN pip3 config set global.break-system-packages true
 
 # Install pdoc3 for generating Python documentation and
 # pybib for generating publication lists from bib files
-RUN python3 -m venv $VIRTUAL_ENV
+RUN pip3 install --upgrade pip && pip3 install --user pip
 RUN pip3 install wheel pdoc3==0.9.2 pybtex==0.24.0
 
 
