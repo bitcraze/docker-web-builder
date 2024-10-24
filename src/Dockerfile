@@ -1,7 +1,7 @@
-FROM ruby:3.2-bullseye
+FROM ruby:3.2-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		php7.4-cli php-xml \
+		php8.2-cli php-xml \
 		zip unzip \
 		locales \
 		ditaa \
@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		python3-setuptools \
 		python3-setuptools-scm \
 		python3-usb \
+		python3-venv \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Add wkhtmltopdf, see https://hub.docker.com/r/icalialabs/wkhtmltopdf and https://github.com/IcaliaLabs/docker-wkhtmltopdf
@@ -27,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libfreetype6 \
 		libjpeg62-turbo \
 		libpng16-16 \
-		libssl1.1 \
+		libssl3 \
 		libx11-6 \
 		libx11-data \
 		libxau6 \
@@ -47,8 +48,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=icalialabs/wkhtmltopdf:0.12.5-stretch /usr/local/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 
+# Set up environment variables for venv
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 # Install pdoc3 for generating Python documentation and
 # pybib for generating publication lists from bib files
+RUN python3 -m venv $VIRTUAL_ENV
 RUN pip3 install wheel pdoc3==0.9.2 pybtex==0.24.0
 
 
