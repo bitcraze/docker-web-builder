@@ -80,6 +80,6 @@ RUN mkdir /module && chmod 777 /module
 
 # Newer versions of git are strict about directory ownership.
 # Since repos are mounted at /module with different ownership, allow it.
-RUN git config --global --add safe.directory /module
+RUN git config --system --add safe.directory /module
 
 WORKDIR /module
