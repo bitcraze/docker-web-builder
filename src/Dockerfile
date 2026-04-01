@@ -78,4 +78,8 @@ ADD docs-config.yml /docs-config.yml
 # and will fail unless we make sure it exists and can be written by all users.
 RUN mkdir /module && chmod 777 /module
 
+# Newer versions of git are strict about directory ownership.
+# Since repos are mounted at /module with different ownership, allow it.
+RUN git config --global --add safe.directory /module
+
 WORKDIR /module
