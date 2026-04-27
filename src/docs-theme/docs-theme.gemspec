@@ -10,6 +10,6 @@ Gem::Specification.new do |spec|
 
   spec.files         = spec.files = Dir['_includes/*'] + Dir['_layouts/*'] + Dir['assets/*']
 
-  spec.add_runtime_dependency "jekyll", "~> 3.8"
+  spec.add_runtime_dependency "jekyll", ">= 3.8", "< 5.0"
 
 end

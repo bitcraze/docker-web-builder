@@ -1,4 +1,4 @@
-FROM ruby:3.2-bookworm
+FROM ruby:4.0-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		php8.2-cli php-xml \
@@ -43,7 +43,7 @@ ENV LANG=C.UTF-8
 # html-proofer is used to validate html (including links)
 # kramdown-math-katex is used to suport LaTex in the markdown, mainly for math
 # mini_racer adds js support that is required by katex
-RUN gem install jekyll:4.2.0 jekyll-feed jekyll-relative-links html-proofer kramdown-math-katex:1.0.1 mini_racer webrick
+RUN gem install jekyll:4.4.1 jekyll-feed jekyll-relative-links html-proofer kramdown-math-katex:1.0.1 mini_racer webrick
 
 # A note on kaTex and CSS
 # The version of kaTex (used to generate html from LaTex) and the kaTex CSS that is used in the theme in this image and
