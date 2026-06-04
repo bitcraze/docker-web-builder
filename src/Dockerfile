@@ -1,7 +1,9 @@
 FROM ruby:3.2-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		php8.2-cli php-xml \
+		ca-certificates \
+		curl \
+		gnupg \
 		zip unzip \
 		locales \
 		ditaa \
@@ -11,7 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		python3-setuptools-scm \
 		python3-usb \
 		python3-venv \
-	    wkhtmltopdf \
+		wkhtmltopdf \
+	&& curl -fsSL https://packages.sury.org/php/apt.gpg -o /usr/share/keyrings/sury-php.gpg \
+	&& echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list \
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends php8.5-cli php8.5-xml \
 	&& rm -rf /var/lib/apt/lists/*
 
 
